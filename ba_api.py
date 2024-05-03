@@ -29,9 +29,12 @@ def getTeam(team: str):
         return ("Error getting team!")
 
 
-#Gets the events that a team has participated in for a given year
-#If no year is called then it will list every event that team has participated in
 def getTeam_Events(team: str, year = None):
+
+    """
+    Gets the events that a team has particcipated in for a given year
+    If no year is provided it gives every event that a team has ever participated in
+    """
 
     if year != None:
         api_url = f'https://www.thebluealliance.com/api/v3/team/frc{team}/events/{year}'
@@ -45,9 +48,13 @@ def getTeam_Events(team: str, year = None):
         return ("Error getting team events!")
     
 
-#Gets the team's matches for a given event
+
 def getTeam_Matches(team: str, event: str):
 
+    """
+    Gets the team's matches for a given event
+    """
+    
     api_url = f'https://www.thebluealliance.com/api/v3/team/frc{team}/event/{event}/matches'
     
     try:
@@ -58,6 +65,10 @@ def getTeam_Matches(team: str, event: str):
     
 def getEvent_Matches(event: str):
     
+    """
+    Gets all matches for a given event
+    """
+
     api_url = f'https://www.thebluealliance.com/api/v3/event/{event}/matches'
 
     try:
@@ -65,8 +76,40 @@ def getEvent_Matches(event: str):
         return response.json()
     except requests.exceptions.RequestException as e:
         return ('Error getting matches for event!')
+    
 
 
+def getTeam_MatchKeys(team: str, event: str):
+
+    """
+    Gets only the match keys, a little faster and less data
+    Used to check if the match has already been stored
+    """
+
+    api_url = f'https://www.thebluealliance.com/api/v3/team/frc{team}/event/{event}/matches/keys'
+
+    try:
+        response = requests.get(api_url, headers={'X-TBA-Auth-Key': api_key})
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        return ('Error getting match keys for event!')
+
+
+
+def getMatch(match: str):
+
+    """
+    Gets data for a single match by key
+    """
+
+    api_url = f'https://www.thebluealliance.com/api/v3/match/{match}/simple'
+
+    try:
+        response = requests.get(api_url, headers={'X-TBA-Auth-Key': api_key})
+        return response.json()
+
+    except requests.exceptions.RequestException as e:
+        return ('Error getting match data for key!')
 #Gets all stats for a year for a team
 #Returns winrate for that year, average score
 def getYear_Stats(team: str, year: int):
